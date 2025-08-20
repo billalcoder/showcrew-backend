@@ -16,16 +16,11 @@ const s3 = new S3Client({
   }
 });
 
-console.log({
-  a : process.env.AWS_REGION,
-  b : process.env.AWS_ACCESS_KEY_ID,
-  c : process.env.AWS_SECRET_ACCESS_KEY,
-  d : process.env.AWS_BUCKET_NAME
-});
 // Middleware: Check if user is admin
 export async function isAdmin(req, res, next) {
   try {
     const userId = req.signedCookies.sid;
+    console.log(userId);
     if (!userId) return res.status(401).json({ message: "Not logged in" });
 
     const user = await userModel.findById(userId);
@@ -81,7 +76,7 @@ router.get("/:id", async (req, res) => {
 // ✅ CREATE Product (Admin only)
 router.post("/", isAdmin, upload.array("images", 5), async (req, res) => {
   try {
-    const { title, price, stock, description, category, brand } = req.body;
+    const { title, price, stock, description, category, brand , size } = req.body;
 
     const uploadedImageUrls = [];
 
@@ -113,7 +108,8 @@ router.post("/", isAdmin, upload.array("images", 5), async (req, res) => {
       description,
       images: uploadedImageUrls,
       category,
-      brand
+      brand,
+      size
     });
 
     await newProduct.save();

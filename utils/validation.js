@@ -19,7 +19,7 @@ export const registerSchema = z.object({
   number: z.string().regex(/^\d{10}$/, "Phone number must be 10 digits"),
   password: z.string().min(6).max(100),
   role: z.enum(["admin", "user"]).optional(),
-  adminId :z.string().min(0)
+  adminId: z.string().min(0)
 });
 
 // Login Schema
@@ -33,9 +33,10 @@ export const productSchema = z.object({
   price: z.number().positive(),
   stock: z.number().int().nonnegative(),
   description: z.string().min(5),
-  images: z.array(z.string().url()).optional(),
+  images: z.array(z.string().url()).optional().default([]),
   category: z.string().min(2),
-  brand: z.string().min(2)
+  brand: z.string().min(2),
+  size: z.array(z.string()).optional().default([])
 });
 
 export const sendOtpSchema = z.object({

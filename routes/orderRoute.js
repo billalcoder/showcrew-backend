@@ -25,6 +25,8 @@ router.post("/place", async (req, res) => {
             priceAtPurchase: totalAmount, // snapshot current price
         }));
 
+        console.log(items);
+
         // get user (real user id, not sid string)
         const user = await userModel.findOne({ _id: usersession.sessionId }).select("-password");
 
@@ -87,7 +89,7 @@ router.get("/all", isAdmin, async (req, res) => {
   try {
     const orders = await OrderModel.find({ paymentStatus: "PENDING" })
       .populate("user", "fullname email")
-      .populate("items.product", "title price")
+      .populate("items.product", "title price images")
       .sort({ createdAt: -1 });
 
     res.json(orders);
