@@ -12,6 +12,9 @@ import helmet from "helmet";
 import "./routes/orderRoute.js"
 
 const app = expess()
+
+app.set("trust proxy", 1);
+
 app.use(
     helmet({
         contentSecurityPolicy: {
