@@ -16,7 +16,6 @@ router.get("/", async (req, res) => {
       res.cookie("gid", sessionId, {
         httpOnly: true,
         secure : true,
-        sameSite : "lax",
         signed: true,
         maxAge: 1000 * 60 * 60 * 24 // 1 day
       });
