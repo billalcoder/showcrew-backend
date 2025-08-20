@@ -22,7 +22,8 @@ router.post("/place", async (req, res) => {
         const items = usersession.cart.map((item) => ({
             product: item.product._id,
             quantity: item.quantity,
-            priceAtPurchase: totalAmount, // snapshot current price
+            priceAtPurchase: totalAmount, // snapshot current price,
+            size : item.size || null
         }));
 
         console.log(items);

@@ -10,7 +10,8 @@ const orderSchema = new Schema(
       {
         product: { type: Schema.Types.ObjectId, ref: "productModel", required: true },
         quantity: { type: Number, required: true, min: 1 },
-        priceAtPurchase: { type: Number, required: true }, // snapshot price
+        priceAtPurchase: { type: Number, required: true }, // snapshot price,
+        size: { type: String, required: false }
       },
     ],
 
