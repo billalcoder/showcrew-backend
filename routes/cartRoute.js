@@ -10,7 +10,7 @@ const router = express.Router();
  */
 router.post("/add", async (req, res) => {
   try {
-    const { product, quantity = 1 ,size } = req.body;
+    const { product, quantity = 1, size } = req.body;
     const id = product._id; // product id from body
     const sid = req.signedCookies.sid;
     const gid = req.signedCookies.gid;
@@ -21,23 +21,26 @@ router.post("/add", async (req, res) => {
 
     // ✅ check product exists
     const productget = await productModel.findById(id);
-    if (!productget) return res.status(404).json({ message: "Product not found" });
+    if (!productget)
+      return res.status(404).json({ message: "Product not found" });
 
     let session;
 
     // 🟢 USER SESSION
     if (sid) {
       session = await SessionModel.findOne({ sessionId: sid });
-      if (!session) return res.status(404).json({ message: "User session not found" });
+      if (!session)
+        return res.status(404).json({ message: "User session not found" });
 
       const existingItem = session.cart.find(
-        (item) => item.product?.toString() === id
+        (item) =>
+          item.product?.toString() === id && item.size === size // ✅ check size also
       );
 
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
-        session.cart.push({ product: id, quantity });
+        session.cart.push({ product: id, quantity, size }); // ✅ store size
       }
 
       await session.save();
@@ -49,16 +52,18 @@ router.post("/add", async (req, res) => {
     // 🟡 GUEST SESSION
     if (gid) {
       session = await guestSessionModel.findOne({ sessionId: gid });
-      if (!session) return res.status(404).json({ message: "Guest session not found" });
+      if (!session)
+        return res.status(404).json({ message: "Guest session not found" });
 
       const existingItem = session.cart.find(
-        (item) => item.product?.toString() === id
+        (item) =>
+          item.product?.toString() === id && item.size === size // ✅ check size also
       );
 
       if (existingItem) {
         existingItem.quantity += quantity;
       } else {
-        session.cart.push({ product: id, quantity }); // ✅ fixed key
+        session.cart.push({ product: id, quantity, size }); // ✅ store size
       }
 
       await session.save();
@@ -67,9 +72,12 @@ router.post("/add", async (req, res) => {
       return res.json({ message: "Added to guest cart", cart: session.cart });
     }
   } catch (err) {
-    res.status(500).json({ message: "Failed to add to cart", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to add to cart", error: err.message });
   }
 });
+
 
 
 /**
