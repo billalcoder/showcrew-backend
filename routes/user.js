@@ -110,6 +110,7 @@ router.post("/login", loginLimiter, async (req, res) => {
     // Set signed cookie for logged-in user
     res.cookie("sid", user._id.toString(), {
       httpOnly: true,
+      sameSite: "none",
       secure : true,
       signed: true,
       maxAge: 1000 * 60 * 60 * 24

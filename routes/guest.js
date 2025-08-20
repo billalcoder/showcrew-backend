@@ -15,7 +15,8 @@ router.get("/", async (req, res) => {
       // Save in cookie
       res.cookie("gid", sessionId, {
         httpOnly: true,
-        secure : true,
+        sameSite: "none",
+        secure: true,
         signed: true,
         maxAge: 1000 * 60 * 60 * 24 // 1 day
       });
@@ -75,9 +76,9 @@ router.get("/get", (req, res) => {
   const gid = req.signedCookies.gid
 
   if (sid) {
-    return res.status(200).json({sid})
+    return res.status(200).json({ sid })
   } else if (gid) {
-    return res.status(200).json({gid})
+    return res.status(200).json({ gid })
   } else {
     return res.status(400).json({ error: "no user found" })
   }
