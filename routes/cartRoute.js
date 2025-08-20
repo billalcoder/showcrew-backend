@@ -10,7 +10,7 @@ const router = express.Router();
  */
 router.post("/add", async (req, res) => {
   try {
-    const { product, quantity = 1 } = req.body;
+    const { product, quantity = 1 ,size } = req.body;
     const id = product._id; // product id from body
     const sid = req.signedCookies.sid;
     const gid = req.signedCookies.gid;

@@ -6,6 +6,7 @@ const SessionSchema = new Schema({
     {
       product: { type: Schema.Types.ObjectId, ref: "productModel" }, // ✅ important
       quantity: { type: Number, default: 1 },
+      size: { type: String },
     },
   ],
   createdAt: { type: Date, default: Date.now, expires: 60 * 60 * 24 * 20 } // optional: auto-delete after 1 day
