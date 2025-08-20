@@ -111,6 +111,7 @@ router.post("/login", loginLimiter, async (req, res) => {
     res.cookie("sid", user._id.toString(), {
       httpOnly: true,
       sameSite: "lax",
+      secure : true,
       signed: true,
       maxAge: 1000 * 60 * 60 * 24
     });
