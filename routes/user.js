@@ -108,7 +108,7 @@ router.post("/login", loginLimiter, async (req, res) => {
     await session.save();
 
     // Set signed cookie for logged-in user
-    res.cookie("sid", session, {
+    res.cookie("sid", session._id, {
       httpOnly: true,
       sameSite: "none",
       secure: true,
