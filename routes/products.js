@@ -3,7 +3,7 @@ import { productModel } from "../model/productModel.js";
 import { userModel } from "../model/userModel.js";
 
 const router = express.Router();
-import { S3Client, PutObjectCommand  , DeleteObjectCommand} from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import multer from "multer";
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -22,12 +22,12 @@ export async function isAdmin(req, res, next) {
     const userId = req.signedCookies.sid;
     console.log(userId);
     if (!userId) return res.status(401).json({ message: "Not logged in" });
-
-    const user = await userModel.findById(userId);
+    const sessionId = await SessionModel.findById(userId)
+    const usersession = sessionId.sessionId
+    const user = await userModel.findById(usersession);
     if (!user || !user.role.includes("admin")) {
       return res.status(403).json({ message: "Access denied. Admin only." });
     }
-
     req.user = user;
     next();
   } catch (err) {
@@ -51,7 +51,6 @@ async function getLoggedInUser(req, res, next) {
   }
 }
 
-// ✅ GET Products (User sees only their admin's products)
 // GET all products
 router.get("/all", async (req, res) => {
   try {
@@ -76,14 +75,14 @@ router.get("/:id", async (req, res) => {
 // ✅ CREATE Product (Admin only)
 router.post("/", isAdmin, upload.array("images", 5), async (req, res) => {
   try {
-    const { title, price, stock, description, category, brand , size } = req.body;
+    const { title, price, stock, description, category, brand, size } = req.body;
 
     const uploadedImageUrls = [];
 
     // Upload each image to S3
     for (const file of req.files) {
       const fileName = `${Date.now()}-${file.originalname}`;
-      
+
       const uploadParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: fileName,
@@ -113,15 +112,15 @@ router.post("/", isAdmin, upload.array("images", 5), async (req, res) => {
     });
 
     await newProduct.save();
-    res.status(201).json({ 
-      message: "Product created successfully", 
-      product: newProduct 
+    res.status(201).json({
+      message: "Product created successfully",
+      product: newProduct
     });
 
   } catch (err) {
-    res.status(500).json({ 
-      message: "Failed to create product", 
-      error: err.message 
+    res.status(500).json({
+      message: "Failed to create product",
+      error: err.message
     });
   }
 });

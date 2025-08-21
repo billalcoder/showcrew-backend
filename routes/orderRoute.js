@@ -15,7 +15,7 @@ router.post("/place", async (req, res) => {
         const { totalAmount, paymentMethod, paymentStatus } = req.body;
 
         // get session
-        const usersession = await SessionModel.findOne({ sessionId: sid }).populate("cart.product");
+        const usersession = await SessionModel.findOne({ _id: sid }).populate("cart.product");
         if (!usersession) return res.status(404).json({ error: "User session not found" });
 
         // prepare items array
@@ -72,7 +72,7 @@ router.get("/my-order", async (req, res) => {
         const sid = req.signedCookies.sid;
         if (!sid) return res.status(401).json({ error: "Please login" });
 
-        const usersession = await SessionModel.findOne({ sessionId: sid });
+        const usersession = await SessionModel.findOne({ _id: sid });
         if (!usersession) return res.status(404).json({ error: "Session not found" });
 
         const orders = await OrderModel.find({ user: usersession.sessionId })

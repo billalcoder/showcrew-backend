@@ -28,7 +28,7 @@ router.post("/add", async (req, res) => {
 
     // 🟢 USER SESSION
     if (sid) {
-      session = await SessionModel.findOne({ sessionId: sid });
+      session = await SessionModel.findOne({ _id : sid });
       if (!session)
         return res.status(404).json({ message: "User session not found" });
 
@@ -89,7 +89,7 @@ router.get("/", async (req, res) => {
     const gid = req.signedCookies.gid;
 
     if (sid) {
-      const session = await SessionModel.findOne({ sessionId: sid })
+      const session = await SessionModel.findOne({ _id: sid })
       if (!session) return res.status(404).json({ message: "User session not found" });
       await session.save();
       await session.populate("cart.product"); // populate products
@@ -120,7 +120,7 @@ router.delete("/remove/:productId", async (req, res) => {
     const { productId } = req.params;
 
     if (sid) {
-      const session = await SessionModel.findOne({ sessionId: sid });
+      const session = await SessionModel.findOne({ _id: sid });
       if (!session) return res.status(404).json({ message: "User session not found" });
 
       session.cart = session.cart.filter(

@@ -2,7 +2,7 @@ import { OAuth2Client } from "google-auth-library";
 import express from "express";
 import bcrypt from "bcryptjs";
 import { userModel } from "../model/userModel.js";
-import { validateRegister, validateLogin, sanitizeInput} from "../utils/validation.js";
+import { validateRegister, validateLogin, sanitizeInput } from "../utils/validation.js";
 import { sendOtpMail } from "../utils/email.js";
 import { SessionModel } from "../model/session.js";
 import { guestSessionModel } from "../model/guestSesion.js";
@@ -108,10 +108,10 @@ router.post("/login", loginLimiter, async (req, res) => {
     await session.save();
 
     // Set signed cookie for logged-in user
-    res.cookie("sid", user._id.toString(), {
+    res.cookie("sid", session, {
       httpOnly: true,
       sameSite: "none",
-      secure : true,
+      secure: true,
       signed: true,
       maxAge: 1000 * 60 * 60 * 24
     });
@@ -144,8 +144,9 @@ router.post("/logout", async (req, res) => {
 router.get("/profile", async (req, res) => {
   const userId = req.signedCookies.sid;
   if (!userId) return res.status(401).json({ message: "Not logged in" });
-
-  const user = await userModel.findById(userId).select("-password");
+  const sessionId = await SessionModel.findById(userId)
+  const usersession = sessionId.sessionId
+  const user = await userModel.findById(usersession).select("-password");
   if (!user) return res.status(404).json({ message: "User not found" });
 
   res.json(user);
