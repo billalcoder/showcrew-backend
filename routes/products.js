@@ -1,10 +1,12 @@
 import express from "express";
 import { productModel } from "../model/productModel.js";
+import { SessionModel } from "../model/session.js";
 import { userModel } from "../model/userModel.js";
 
 const router = express.Router();
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import multer from "multer";
+import { SessionModel } from "../model/session.js";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
