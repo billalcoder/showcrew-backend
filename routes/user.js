@@ -96,7 +96,7 @@ router.post("/login", loginLimiter, async (req, res) => {
       if (guest) {
         userCart = guest.cart || [];
         await guestSessionModel.deleteOne({ sessionId: gid });
-        res.clearCookie("gid");
+        res.clearCookie("gid", { sameSite: "none", secure: true });
       }
     }
 
@@ -116,7 +116,7 @@ router.post("/login", loginLimiter, async (req, res) => {
       maxAge: 1000 * 60 * 60 * 24
     });
 
-    res.clearCookie("gid")
+    res.clearCookie("gid", { sameSite: "none", secure: true });
     await guestSessionModel.deleteOne({ sessionId: gid });
 
     res.json({ message: "Login successful", cart: userCart });
@@ -132,7 +132,7 @@ router.post("/logout", async (req, res) => {
   if (session) {
     try {
       await SessionModel.findByIdAndDelete(session)
-      res.clearCookie("sid");
+      res.clearCookie("sid", { sameSite: "none", secure: true });
       return res.json({ message: "Logged out successfully" });
     } catch (error) {
       res.json({ message: "Failed" });
