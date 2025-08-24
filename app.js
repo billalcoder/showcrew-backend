@@ -15,6 +15,13 @@ const app = expess()
 
 app.set("trust proxy", 1);
 
+
+app.use(cors({
+    origin: ["https://showcrew.netlify.app", "http://localhost:5173", "http://localhost:5174"],
+    credentials: true
+}))
+
+
 app.use(
     helmet({
         contentSecurityPolicy: {
@@ -56,10 +63,7 @@ const globalLimiter = rateLimit({
 
 app.use(globalLimiter);
 
-app.use(cors({
-    origin: ["https://showcrew.netlify.app", "http://localhost:5173", "http://localhost:5174"],
-    credentials: true
-}))
+
 app.use(cookieParser(")(*&^%$#@!this is my secret"))
 app.use(expess.json())
 
