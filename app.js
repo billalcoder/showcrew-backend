@@ -21,38 +21,37 @@ app.use(cors({
     credentials: true
 }))
 
-
-app.use(
-    helmet({
-        contentSecurityPolicy: {
-            useDefaults: true,
-            directives: {
-                defaultSrc: ["'self'"],
-                scriptSrc: ["'self'", "https://accounts.google.com"], // allow Google login
-                styleSrc: ["'self'", "https://fonts.googleapis.com"],
-                fontSrc: ["'self'", "https://fonts.gstatic.com"],
-                imgSrc: ["'self'", "data:", "https://your-cdn.com"], // your image/CDN domain
-                connectSrc: ["'self'", "https://api.yourbackend.com"],
-                frameSrc: ["'self'", "https://accounts.google.com"], // allow Google login iframe
-                objectSrc: ["'none'"], // no Flash or plugins
-                upgradeInsecureRequests: [],
-            },
-        },
-        referrerPolicy: { policy: "no-referrer" },
-        crossOriginEmbedderPolicy: true,
-        crossOriginResourcePolicy: { policy: "same-origin" },
-        crossOriginOpenerPolicy: { policy: "same-origin" },
-        frameguard: { action: "sameorigin" },
-        xssFilter: true, // Older browsers XSS protection
-        noSniff: true, // Prevent MIME sniffing
-        hidePoweredBy: true, // Hide "X-Powered-By: Express"
-        hsts: {
-            maxAge: 60 * 60 * 24 * 365, // 1 year
-            includeSubDomains: true,
-            preload: true,
-        },
-    })
-);
+// app.use(
+//     helmet({
+//         contentSecurityPolicy: {
+//             useDefaults: true,
+//             directives: {
+//                 defaultSrc: ["'self'"],
+//                 scriptSrc: ["'self'", "https://accounts.google.com"], // allow Google login
+//                 styleSrc: ["'self'", "https://fonts.googleapis.com"],
+//                 fontSrc: ["'self'", "https://fonts.gstatic.com"],
+//                 imgSrc: ["'self'", "data:", "https://your-cdn.com"], // your image/CDN domain
+//                 connectSrc: ["'self'", "https://api.yourbackend.com"],
+//                 frameSrc: ["'self'", "https://accounts.google.com"], // allow Google login iframe
+//                 objectSrc: ["'none'"], // no Flash or plugins
+//                 upgradeInsecureRequests: [],
+//             },
+//         },
+//         referrerPolicy: { policy: "no-referrer" },
+//         crossOriginEmbedderPolicy: true,
+//         crossOriginResourcePolicy: { policy: "same-origin" },
+//         crossOriginOpenerPolicy: { policy: "same-origin" },
+//         frameguard: { action: "sameorigin" },
+//         xssFilter: true, // Older browsers XSS protection
+//         noSniff: true, // Prevent MIME sniffing
+//         hidePoweredBy: true, // Hide "X-Powered-By: Express"
+//         hsts: {
+//             maxAge: 60 * 60 * 24 * 365, // 1 year
+//             includeSubDomains: true,
+//             preload: true,
+//         },
+//     })
+// );
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // max 100 requests per IP in 15 minutes

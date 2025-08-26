@@ -23,7 +23,7 @@ router.post("/place", async (req, res) => {
             product: item.product._id,
             quantity: item.quantity,
             priceAtPurchase: totalAmount, // snapshot current price,
-            size : item.size || null
+            size: item.size || null
         }));
 
         console.log(items);
@@ -59,7 +59,7 @@ router.post("/place", async (req, res) => {
             "admin@shoecrew.com"       // admin
         );
         usersession.cart = []
-          await usersession.save(); 
+        await usersession.save();
         res.status(200).json({ message: "Order placed successfully", order });
     } catch (error) {
         console.error(error);
@@ -76,7 +76,8 @@ router.get("/my-order", async (req, res) => {
         if (!usersession) return res.status(404).json({ error: "Session not found" });
 
         const orders = await OrderModel.find({ user: usersession.sessionId })
-            .populate("items.product", "name price")
+            .populate("user", "fullname email")
+            .populate("items.product", "title price images")
             .sort({ createdAt: -1 });
 
         res.json(orders);
@@ -87,16 +88,16 @@ router.get("/my-order", async (req, res) => {
 
 // Get all orders (Admin only)
 router.get("/all", isAdmin, async (req, res) => {
-  try {
-    const orders = await OrderModel.find({ paymentStatus: "PENDING" })
-      .populate("user", "fullname email")
-      .populate("items.product", "title price images")
-      .sort({ createdAt: -1 });
+    try {
+        const orders = await OrderModel.find({ paymentStatus: "PENDING" })
+            .populate("user", "fullname email")
+            .populate("items.product", "title price images")
+            .sort({ createdAt: -1 });
 
-    res.json(orders);
-  } catch (error) {
-    res.status(500).json({ error: "Server error" });
-  }
+        res.json(orders);
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
 });
 
 // PUT /order/deliver/:id
