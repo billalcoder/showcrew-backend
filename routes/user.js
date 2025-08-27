@@ -2,7 +2,7 @@ import { OAuth2Client } from "google-auth-library";
 import express from "express";
 import bcrypt from "bcryptjs";
 import { userModel } from "../model/userModel.js";
-import { validateRegister, validateLogin, sanitizeInput } from "../utils/validation.js";
+import { validateRegister, validateLogin, sanitizeInput, validateSendOtp, sendOtpSchema } from "../utils/validation.js";
 import { sendOtpMail } from "../utils/email.js";
 import { SessionModel } from "../model/session.js";
 import { guestSessionModel } from "../model/guestSesion.js";
@@ -215,9 +215,14 @@ router.post("/google-login", async (req, res) => {
 
 router.post("/send-otp", async (req, res) => {
   try {
-    const email = sanitizeInput(req.body.email);
+    // const Email = sanitizeInput(req.body.email);
+    const { data, success } = validateSendOtp(req.body)
+    const email = data?.email
+    if(!email){
+      return res.status(404).json({error : "invalid email"})
+    }
 
-    if (!email) {
+    if (!success) {
       return res.status(400).json({ message: "Email is required" });
     }
 

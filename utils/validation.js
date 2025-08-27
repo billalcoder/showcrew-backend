@@ -40,11 +40,11 @@ export const productSchema = z.object({
 });
 
 export const sendOtpSchema = z.object({
-  email: z.string().email("Invalid email format"),
-});
+  email: z.email("Invalid email format"),
+}); 
 
 export const verifyOtpSchema = z.object({
-  email: z.string().email("Invalid email format"),
+  email: z.email("Invalid email format"),
   otp: z.string().regex(/^\d{6}$/, "OTP must be 6 digits"),
 });
 
@@ -70,7 +70,7 @@ export const validateRegister = (data) => {
   for (let key in data) {
     cleanData[key] = sanitizeInput(data[key]);
   }
-  return registerSchema.parse(cleanData);
+  return registerSchema.safeParse(cleanData);
 };
 
 // Validate and sanitize for login
@@ -79,7 +79,7 @@ export const validateLogin = (data) => {
   for (let key in data) {
     cleanData[key] = sanitizeInput(data[key]);
   }
-  return loginSchema.parse(cleanData);
+  return loginSchema.safeParse(cleanData);
 };
 
 export const sanitizeObject = (obj) => {
@@ -92,10 +92,10 @@ export const sanitizeObject = (obj) => {
 
 export const validateSendOtp = (data) => {
   const cleanData = sanitizeObject(data);
-  return sendOtpSchema.parse(cleanData);
+  return sendOtpSchema.safeParse(cleanData);
 };
 
 export const validateVerifyOtp = (data) => {
   const cleanData = sanitizeObject(data);
-  return verifyOtpSchema.parse(cleanData);
+  return verifyOtpSchema.safeParse(cleanData);
 };
