@@ -77,11 +77,16 @@ router.post("/login", loginLimiter, async (req, res) => {
     const gid = req.signedCookies.gid;
 
     // Validate and sanitize login data
-    const parsedData = validateLogin(req.body);
-    const { email, password } = sanitizeInput(parsedData);
+    const {success , data} = validateLogin(req.body);
+    if(!success){
+      return res.json({error : "Please enter the valid data"})
+    }
+    // console.log(parsedData);
+    const { email, password } = sanitizeInput(data);
 
     // Find user
     const user = await userModel.findOne({ email });
+   
     if (!user) return res.status(400).json({ message: "Invalid email or password" });
 
     // Check password
@@ -129,6 +134,7 @@ router.post("/login", loginLimiter, async (req, res) => {
 // LOGOUT
 router.post("/logout", async (req, res) => {
   const session = req.signedCookies.sid
+  console.log(session);
   if (session) {
     try {
       await SessionModel.findByIdAndDelete(session)
@@ -137,6 +143,8 @@ router.post("/logout", async (req, res) => {
     } catch (error) {
       res.json({ message: "Failed" });
     }
+  }else{
+    res.json({ message: "NO session found" });
   }
 });
 
