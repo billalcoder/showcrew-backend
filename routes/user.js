@@ -77,16 +77,16 @@ router.post("/login", loginLimiter, async (req, res) => {
     const gid = req.signedCookies.gid;
 
     // Validate and sanitize login data
-    const {success , data} = validateLogin(req.body);
-    if(!success){
-      return res.json({error : "Please enter the valid data"})
+    const { success, data } = validateLogin(req.body);
+    if (!success) {
+      return res.json({ error: "Please enter the valid data" })
     }
     // console.log(parsedData);
     const { email, password } = sanitizeInput(data);
 
     // Find user
     const user = await userModel.findOne({ email });
-   
+
     if (!user) return res.status(400).json({ message: "Invalid email or password" });
 
     // Check password
@@ -143,7 +143,7 @@ router.post("/logout", async (req, res) => {
     } catch (error) {
       res.json({ message: "Failed" });
     }
-  }else{
+  } else {
     res.json({ message: "NO session found" });
   }
 });
@@ -226,8 +226,14 @@ router.post("/send-otp", async (req, res) => {
     // const Email = sanitizeInput(req.body.email);
     const { data, success } = validateSendOtp(req.body)
     const email = data?.email
-    if(!email){
-      return res.status(404).json({error : "invalid email"})
+    if (!email) {
+      return res.status(404).json({ error: "invalid email" })
+    }
+    else {
+      const user = await userModel.findOne({ email })
+      if (user) {
+        return res.json({ error: "try different email" })
+      }
     }
 
     if (!success) {
