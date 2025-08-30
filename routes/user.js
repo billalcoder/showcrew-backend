@@ -25,7 +25,7 @@ router.post("/signup", loginLimiter, async (req, res) => {
   try {
     const { data, success } = validateRegister(req.body);
     if (!success) {
-      return res.status(400).json({ error: "somthing went wrong" })
+      return res.status(400).json({ error: data })
     }
     const {
       fullname,
