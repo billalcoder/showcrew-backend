@@ -23,7 +23,10 @@ const loginLimiter = rateLimit({
 // SIGNUP
 router.post("/signup", loginLimiter, async (req, res) => {
   try {
-    const parsedData = validateRegister(req.body);
+    const { data, success } = validateRegister(req.body);
+    if (!success) {
+      return res.status(400).json({ error: "somthing went wrong" })
+    }
     const {
       fullname,
       email,
@@ -34,7 +37,8 @@ router.post("/signup", loginLimiter, async (req, res) => {
       password,
       role,
       adminId// 👈 Make sure you destructure it
-    } = sanitizeInput(parsedData);
+    } = sanitizeInput(data);
+
     // Validate adminId
     if (!adminId) {
       return res.status(400).json({ message: "adminId is required" });
