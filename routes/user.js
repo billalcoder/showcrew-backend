@@ -24,7 +24,7 @@ const loginLimiter = rateLimit({
 router.post("/signup", loginLimiter, async (req, res) => {
   try {
     const { data, success } = validateRegister(req.body);
-    console.log(data , success);
+    console.log(data, success);
     if (!success) {
       return res.status(400).json({ error: data })
     }
@@ -157,12 +157,15 @@ router.post("/logout", async (req, res) => {
 router.get("/profile", async (req, res) => {
   const userId = req.signedCookies.sid;
   if (!userId) return res.status(401).json({ message: "Not logged in" });
-  const sessionId = await SessionModel.findById(userId)
-  const usersession = sessionId.sessionId
-  const user = await userModel.findById(usersession).select("-password");
-  if (!user) return res.status(404).json({ message: "User not found" });
-
-  res.json(user);
+  try {
+    const sessionId = await SessionModel.findById(userId)
+    const usersession = sessionId.sessionId
+    const user = await userModel.findById(usersession).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (error) {
+    return res.status(500).json({error : "user not loged in"})
+  }
 });
 
 router.post("/google-login", async (req, res) => {
