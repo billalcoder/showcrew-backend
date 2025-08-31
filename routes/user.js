@@ -123,7 +123,7 @@ router.post("/login", loginLimiter, async (req, res) => {
       sameSite: "none",
       secure: true,
       signed: true,
-      maxAge: 1000 * 60 * 60 * 24
+      maxAge: 1000 * 60 * 60 * 24 * 90
     });
 
     res.clearCookie("gid", { sameSite: "none", secure: true });

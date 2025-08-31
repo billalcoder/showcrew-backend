@@ -66,7 +66,7 @@ router.get("/all", async (req, res) => {
 // Public GET single product — no login check
 router.get("/:id", async (req, res) => {
   try {
-    const product = await productModel.findById(req.params.id);
+    const product = await productModel.findOne({ title: req.params.id });
     if (!product) return res.status(404).json({ message: "Product not found" });
     res.json(product);
   } catch (err) {
